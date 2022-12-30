@@ -1,5 +1,16 @@
-const app = require('./app')
+const app = require('./app');
+const mongoose = require('mongoose');
 
-app.listen(3000, () => {
-  console.log("Server running. Use our API on port: 3000")
-})
+const dbb = 'mongodb+srv://harry:test@cluster0.rc51g90.mongodb.net/?retryWrites=true&w=majority';
+mongoose
+    .connect(dbb)
+    .then(() =>
+        app.listen(3000, () => {
+          console.log('Database connection successful');
+        }),
+    )
+    .catch(error => {
+      console.log('Database connection fail', error.message);
+      process.exit(1);
+    });
+

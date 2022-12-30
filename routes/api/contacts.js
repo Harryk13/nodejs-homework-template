@@ -53,7 +53,7 @@ router.delete('/:contactId', async (req, res, next) => {
 })
 
 router.put('/:contactId', async (req, res, next) => {
-  const {contact, error} = await contactsModel.addContact(req.body);
+  const {contact, error} = await contactsModel.updateContact(req.params.contactId, req.body);
 
   if (contact && !error) {
     res.json(contact);
@@ -65,6 +65,29 @@ router.put('/:contactId', async (req, res, next) => {
         });
   }
 })
+
+router.post('/:contactId/favorite', async (req, res, next) => {
+    const {contactId} = req.params;
+    const {favorite} = req.body;
+
+    if (!favorite) {
+        res.status(400).json({message: 'missing field favorite'});
+
+        return;
+    }
+
+    const contact = await contactsModel.updateStatusContact(contactId, favorite);
+
+    if (contact) {
+        res.status(201).json(contact);
+    } else {
+        res
+            .status(400)
+            .json({
+                message: 'missing required name field'
+            });
+    }
+});
 
 
 module.exports = router
